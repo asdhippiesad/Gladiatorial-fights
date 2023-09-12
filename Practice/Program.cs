@@ -20,6 +20,9 @@ namespace Practice
     {
         private List<Fighter> _fighters = new List<Fighter>();
 
+        private ConsoleColor fullColor;
+        private ConsoleColor emptyColor;
+
         public Arena()
         {
             _fighters.Add(new Arbalester());
@@ -68,13 +71,23 @@ namespace Practice
             Console.WriteLine("Выберите второго бойца: ");
             Fighter secondFighter = ChooseFighert();
 
+            ConsoleColor firstFighterFullColor = ConsoleColor.Cyan;
+            ConsoleColor secondFighterFullColor = ConsoleColor.DarkYellow;
+            ConsoleColor firstFighterEmptyColor = ConsoleColor.Blue;
+            ConsoleColor secondFighterEmptyColor = ConsoleColor.Green;
+
             Console.WriteLine("Нажмите любую клавишу для начала боя.");
             Console.ReadKey();
+            Console.Clear();
 
             while (firstFighter.isAlive && secondFighter.isAlive)
             {
-                firstFighter.DrawHealthBar();
-                secondFighter.DrawHealthBar();
+                firstFighter.DisplayHealthBar(firstFighterFullColor, firstFighterEmptyColor);
+                secondFighter.DisplayHealthBar(secondFighterFullColor, secondFighterEmptyColor);
+
+
+                firstFighter.DisplayHealthBar(fullColor, emptyColor);
+                secondFighter.DisplayHealthBar(fullColor, emptyColor);
 
                 firstFighter.Attack(secondFighter);
                 secondFighter.Attack(firstFighter);
@@ -82,6 +95,7 @@ namespace Practice
                 Console.ReadKey();
             }
 
+            Console.Clear();
             Console.WriteLine("Бой завершён.");
         }
     }
@@ -98,30 +112,35 @@ namespace Practice
             enemy.TakeDamage(Damage);
         }
 
-        public void DrawHealthBar()
+        public void DisplayHealthBar(ConsoleColor fullColor, ConsoleColor emptyColor)
         {
-            Console.WriteLine("Health Bar");
             Console.Write($"Имя: {Name}\nHealth: ");
+            Console.Write("[");
 
             int currentHealth = Health;
+
             int healthBarLength = 10;
+            int filledLength = currentHealth * healthBarLength;
 
-            int filledLength = (currentHealth * healthBarLength) / healthBarLength;
-
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("[");
+            Console.ForegroundColor = fullColor;
 
             for (int i = 0; i < healthBarLength; i++)
             {
                 if (i < filledLength)
                 {
-                    Console.Write("_");
+                    Console.Write("█");
+                }
+                else
+                {
+                    Console.ForegroundColor = emptyColor;
+                    Console.Write(" ");
                 }
             }
 
+            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine($"] {currentHealth}/{healthBarLength}");
         }
-
+        
         private void TakeDamage(int damage)
         {
             if (damage > 0)
@@ -155,16 +174,11 @@ namespace Practice
         {
             AuraFlash = 187;
             Health = 900;
-            Name = "Урсууна";
+            Name = "ЫФВФЫВ";
             Damage = 187;
         }
 
         public int AuraFlash { get; private set; }
-
-        public bool IsAlive()
-        {
-            return Health > 0;
-        }
 
         public int UsesSpecialAttack()
         {
@@ -212,7 +226,6 @@ class Hunter : Fighter
 
 class SpellSinger : Fighter
 {
-
     public SpellSinger()
     {
         Health = 900;
