@@ -21,7 +21,6 @@ namespace Practice
         private List<Fighter> _fighters = new List<Fighter>();
 
         private ConsoleColor fullColor;
-        private ConsoleColor emptyColor;
 
         public Arena()
         {
@@ -73,8 +72,6 @@ namespace Practice
 
             ConsoleColor firstFighterFullColor = ConsoleColor.Cyan;
             ConsoleColor secondFighterFullColor = ConsoleColor.DarkYellow;
-            ConsoleColor firstFighterEmptyColor = ConsoleColor.Blue;
-            ConsoleColor secondFighterEmptyColor = ConsoleColor.Green;
 
             Console.WriteLine("Нажмите любую клавишу для начала боя.");
             Console.ReadKey();
@@ -82,12 +79,12 @@ namespace Practice
 
             while (firstFighter.isAlive && secondFighter.isAlive)
             {
-                firstFighter.DisplayHealthBar(firstFighterFullColor, firstFighterEmptyColor);
-                secondFighter.DisplayHealthBar(secondFighterFullColor, secondFighterEmptyColor);
+                firstFighter.DisplayHealthBar(firstFighterFullColor);
+                secondFighter.DisplayHealthBar(secondFighterFullColor);
 
 
-                firstFighter.DisplayHealthBar(fullColor, emptyColor);
-                secondFighter.DisplayHealthBar(fullColor, emptyColor);
+                firstFighter.DisplayHealthBar(fullColor);
+                secondFighter.DisplayHealthBar(fullColor);
 
                 firstFighter.Attack(secondFighter);
                 secondFighter.Attack(firstFighter);
@@ -95,7 +92,6 @@ namespace Practice
                 Console.ReadKey();
             }
 
-            Console.Clear();
             Console.WriteLine("Бой завершён.");
         }
     }
@@ -104,6 +100,7 @@ namespace Practice
     {
         public string Name { get; protected set; }
         public int Health { get; protected set; }
+        public int MaxHealth { get; protected set; } = 2000;
         public int Damage { get; protected set; }
         public bool isAlive => Health > 0;
 
@@ -112,15 +109,16 @@ namespace Practice
             enemy.TakeDamage(Damage);
         }
 
-        public void DisplayHealthBar(ConsoleColor fullColor, ConsoleColor emptyColor)
+        public void DisplayHealthBar(ConsoleColor fullColor)
         {
             Console.Write($"Имя: {Name}\nHealth: ");
             Console.Write("[");
 
+            int maxHealth = MaxHealth;
             int currentHealth = Health;
 
-            int healthBarLength = 10;
-            int filledLength = currentHealth * healthBarLength;
+            int healthBarLength = 50;
+            int filledLength = (int)((float)currentHealth / maxHealth * healthBarLength);
 
             Console.ForegroundColor = fullColor;
 
@@ -130,14 +128,8 @@ namespace Practice
                 {
                     Console.Write("█");
                 }
-                else
-                {
-                    Console.ForegroundColor = emptyColor;
-                    Console.Write(" ");
-                }
             }
 
-            Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine($"] {currentHealth}/{healthBarLength}");
         }
         
