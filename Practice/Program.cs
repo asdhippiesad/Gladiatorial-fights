@@ -28,7 +28,7 @@ namespace Practice
             _fighters.Add(new Archmage());
             _fighters.Add(new Knight());
             _fighters.Add(new Hunter());
-            _fighters.Add(new SpellSinger());
+            _fighters.Add(new Magician());
         }
 
         public void ShowInfo()
@@ -69,13 +69,13 @@ namespace Practice
             Fighter firstFighter = ChooseFighert();
             Console.WriteLine("Выберите второго бойца: ");
             Fighter secondFighter = ChooseFighert();
+            Console.ReadKey();
+            Console.Clear();
 
             ConsoleColor firstFighterFullColor = ConsoleColor.Cyan;
             ConsoleColor secondFighterFullColor = ConsoleColor.DarkYellow;
 
             Console.WriteLine("Нажмите любую клавишу для начала боя.");
-            Console.ReadKey();
-            Console.Clear();
 
             while (firstFighter.isAlive && secondFighter.isAlive)
             {
@@ -90,9 +90,9 @@ namespace Practice
                 secondFighter.Attack(firstFighter);
 
                 Console.ReadKey();
+                Console.WriteLine("Бой завершён.");
             }
 
-            Console.WriteLine("Бой завершён.");
         }
     }
 
@@ -112,7 +112,6 @@ namespace Practice
         public void DisplayHealthBar(ConsoleColor fullColor)
         {
             Console.Write($"Имя: {Name}\nHealth: ");
-            Console.Write("[");
 
             int maxHealth = MaxHealth;
             int currentHealth = Health;
@@ -121,6 +120,7 @@ namespace Practice
             int filledLength = (int)((float)currentHealth / maxHealth * healthBarLength);
 
             Console.ForegroundColor = fullColor;
+            Console.Write("[");
 
             for (int i = 0; i < healthBarLength; i++)
             {
@@ -132,7 +132,7 @@ namespace Practice
 
             Console.WriteLine($"] {currentHealth}/{healthBarLength}");
         }
-        
+
         private void TakeDamage(int damage)
         {
             if (damage > 0)
@@ -149,7 +149,7 @@ namespace Practice
             TwinShot = 148;
             Health = 1000;
             Name = "Байбал";
-            Damage = 148;
+            Damage = UsesSpecialAttack();
         }
 
         public int TwinShot { get; private set; }
@@ -167,7 +167,7 @@ namespace Practice
             AuraFlash = 187;
             Health = 900;
             Name = "ЫФВФЫВ";
-            Damage = 187;
+            Damage = UsesSpecialAttack();
         }
 
         public int AuraFlash { get; private set; }
@@ -205,7 +205,7 @@ class Hunter : Fighter
         HammerCrush = 214;
         Health = 1000;
         Name = "Мич";
-        Damage = 214;
+        Damage = UsesSpecialAttack();
     }
 
     public int HammerCrush { get; private set; }
@@ -216,15 +216,15 @@ class Hunter : Fighter
     }
 }
 
-class SpellSinger : Fighter
+class Magician : Fighter
 {
-    public SpellSinger()
+    public Magician()
     {
         Health = 900;
         SwordAttack = 50;
-        GreaterHeal = 150;
+        GreaterHeal = 50;
         Name = "БбБб";
-        Damage = 50;
+        Damage = UsesSpecialAttack();
     }
 
     public int SwordAttack { get; set; }
@@ -232,6 +232,7 @@ class SpellSinger : Fighter
 
     public int UsesSpecialAttack()
     {
+        GetHeal();
         return SwordAttack;
     }
 
