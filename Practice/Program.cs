@@ -20,15 +20,13 @@ namespace Practice
     {
         private List<Fighter> _fighters = new List<Fighter>();
 
-        private ConsoleColor fullColor;
-
         public Arena()
         {
-            _fighters.Add(new Arbalester());
-            _fighters.Add(new Archmage());
-            _fighters.Add(new Knight());
-            _fighters.Add(new Hunter());
-            _fighters.Add(new Magician());
+            _fighters.Add(new Arbalester("Байбал"));
+            _fighters.Add(new Archmage("Урсууна"));
+            _fighters.Add(new Knight("Мич"));
+            _fighters.Add(new Hunter("Альберт"));
+            _fighters.Add(new Magician("АаааАА"));
         }
 
         public void ShowInfo()
@@ -41,7 +39,7 @@ namespace Practice
             }
         }
 
-        public Fighter ChooseFighert()
+        public Fighter ChooseFighter()
         {
             ShowInfo();
 
@@ -59,57 +57,62 @@ namespace Practice
             else
             {
                 Console.WriteLine("Некорректный выбор.");
-                return ChooseFighert();
+                return ChooseFighter();
             }
         }
 
         public void StartBattle()
         {
             Console.WriteLine("Выберите первого бойца: ");
-            Fighter firstFighter = ChooseFighert();
+            Fighter firstFighter = ChooseFighter();
             Console.WriteLine("Выберите второго бойца: ");
-            Fighter secondFighter = ChooseFighert();
+            Fighter secondFighter = ChooseFighter();
+
+            Console.Clear();
+
+            ConsoleColor firstColor = ConsoleColor.Cyan;
+            ConsoleColor secondColor = ConsoleColor.DarkYellow;
+
+            Console.WriteLine("Нажмите любую клавишу для начала боя.");
             Console.ReadKey();
             Console.Clear();
 
-            ConsoleColor firstFighterFullColor = ConsoleColor.Cyan;
-            ConsoleColor secondFighterFullColor = ConsoleColor.DarkYellow;
-
-            Console.WriteLine("Нажмите любую клавишу для начала боя.");
-
-            while (firstFighter.isAlive && secondFighter.isAlive)
+            while (firstFighter.IsAlive && secondFighter.IsAlive)
             {
-                firstFighter.DisplayHealthBar(firstFighterFullColor);
-                secondFighter.DisplayHealthBar(secondFighterFullColor);
-
-
-                firstFighter.DisplayHealthBar(fullColor);
-                secondFighter.DisplayHealthBar(fullColor);
+                firstFighter.DisplayHealthBar(firstColor);
+                secondFighter.DisplayHealthBar(secondColor);
 
                 firstFighter.Attack(secondFighter);
                 secondFighter.Attack(firstFighter);
 
                 Console.ReadKey();
-                Console.WriteLine("Бой завершён.");
+                Console.Clear();
             }
 
+            Console.WriteLine("Бой завершён.");
         }
     }
 
     class Fighter
     {
+        public Fighter(string name)
+        {
+            Name = name;
+            Health = MaxHealth;
+        }
+
         public string Name { get; protected set; }
         public int Health { get; protected set; }
         public int MaxHealth { get; protected set; } = 2000;
         public int Damage { get; protected set; }
-        public bool isAlive => Health > 0;
+        public bool IsAlive => Health > 0;
 
-        public void Attack(Fighter enemy)
+        public virtual void Attack(Fighter enemy)
         {
             enemy.TakeDamage(Damage);
         }
 
-        public void DisplayHealthBar(ConsoleColor fullColor)
+        public virtual void DisplayHealthBar(ConsoleColor fullColor)
         {
             Console.Write($"Имя: {Name}\nHealth: ");
 
@@ -133,114 +136,101 @@ namespace Practice
             Console.WriteLine($"] {currentHealth}/{healthBarLength}");
         }
 
-        private void TakeDamage(int damage)
+        public virtual void TakeDamage(int damage)
         {
             if (damage > 0)
             {
                 Health -= damage;
+                if (Health < 0)
+                {
+                    Health = 0;
+                }
             }
         }
     }
 
     class Arbalester : Fighter
     {
-        public Arbalester()
+        public Arbalester(string name) : base(name)
         {
-            TwinShot = 148;
             Health = 1000;
-            Name = "Байбал";
-            Damage = UsesSpecialAttack();
+            TwinShot = 148;
         }
 
         public int TwinShot { get; private set; }
 
-        public int UsesSpecialAttack()
+        public override void Attack(Fighter enemy)
         {
-            return TwinShot;
+            Console.WriteLine($"{Name}, выпускает двойную стрелу.");
+            enemy.TakeDamage(TwinShot);
         }
     }
 
     class Archmage : Fighter
     {
-        public Archmage()
+        public Archmage(string name) : base(name)
         {
-            AuraFlash = 187;
             Health = 900;
-            Name = "ЫФВФЫВ";
-            Damage = UsesSpecialAttack();
+            AuraFlash = 150;
         }
 
         public int AuraFlash { get; private set; }
 
-        public int UsesSpecialAttack()
+        public override void Attack(Fighter enemy)
         {
-            return AuraFlash;
+            Console.WriteLine($"{Name} использует магическое заклинание.");
+            enemy.TakeDamage(AuraFlash);
         }
     }
 
     class Knight : Fighter
     {
-        public Knight()
+        public Knight(string name) : base(name)
         {
-            ShieldFortress = 99;
             Health = 2000;
-            Name = "АаААа";
-            Damage = 99;
+            ShieldFortress = 170;
         }
 
         public int ShieldFortress { get; private set; }
 
-        public int UsesSpecialAttack()
+        public override void Attack(Fighter enemy)
         {
-            return ShieldFortress;
+            Console.WriteLine($"{Name} удар.");
+            enemy.TakeDamage(ShieldFortress);
         }
     }
 }
 
 class Hunter : Fighter
 {
-
-    public Hunter()
+    public Hunter(string name) : base(name)
     {
-        HammerCrush = 214;
-        Health = 1000;
-        Name = "Мич";
-        Damage = UsesSpecialAttack();
+        Health = 1500;
+        HammerCrush = 160;
     }
 
     public int HammerCrush { get; private set; }
 
-    public int UsesSpecialAttack()
+    public override void Attack(Fighter enemy)
     {
-        return HammerCrush;
+        Console.WriteLine($"{Name} бьет молотом в землю.");
+        enemy.TakeDamage(HammerCrush);
     }
 }
 
 class Magician : Fighter
 {
-    public Magician()
+    public Magician(string name) : base(name)
     {
         Health = 900;
-        SwordAttack = 50;
-        GreaterHeal = 50;
-        Name = "БбБб";
-        Damage = UsesSpecialAttack();
+        SwordAttack = 150;
     }
 
     public int SwordAttack { get; set; }
-    public int GreaterHeal { get; set; }
 
-    public int UsesSpecialAttack()
+    public override void Attack(Fighter enemy)
     {
-        GetHeal();
-        return SwordAttack;
-    }
-
-    public void GetHeal()
-    {
-        Random random = new Random();
-        int randomHeal = random.Next(0, GreaterHeal);
-        randomHeal += Health;
-        Console.WriteLine($"Восстановаление здоровья {randomHeal} - хп.");
+        Console.WriteLine($"{Name} Бьет мечом");
+        enemy.TakeDamage(SwordAttack);
     }
 }
