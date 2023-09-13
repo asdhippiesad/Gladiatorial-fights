@@ -31,13 +31,15 @@ namespace Practice
 
         public void ShowInfo()
         {
-            foreach (Fighter fighter in _fighters)
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("Информация об игроках: ");
+
+            for (int i = 0; i < _fighters.Count; i++)
             {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("Информация об игроках: ");
-                Console.WriteLine($"{fighter.Name} -- {fighter.Health}.\n");
+                Console.WriteLine($"{i + 1}, {_fighters[i].Name} -- {_fighters[i].Health}.\n");
             }
         }
+
 
         public Fighter ChooseFighter()
         {
