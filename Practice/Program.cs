@@ -1,6 +1,7 @@
 ﻿using Practice;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Practice
 {
@@ -43,24 +44,26 @@ namespace Practice
 
         public Fighter ChooseFighter()
         {
-            ShowInfo();
+            Fighter selectedFighters = null;
 
-            for (int i = 0; i < _fighters.Count; i++)
+            while (selectedFighters == null)
             {
-                Console.WriteLine($"Выберите бойца:{_fighters[i].Name}.");
+                ShowInfo();
+
+                Console.WriteLine("Выберите бойца по номеру: ");
+
+                if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= _fighters.Count)
+                {
+                    selectedFighters = _fighters[choice - 1];
+                    Console.WriteLine($"{selectedFighters.Name}");
+                }
+                else
+                {
+                    Console.WriteLine("Некорректный выбор.");
+                }
             }
 
-            if (int.TryParse(Console.ReadLine(), out int choice) && choice >= 1 && choice <= _fighters.Count)
-            {
-                Fighter selectedFighters = _fighters[choice - 1];
-                Console.WriteLine($"{selectedFighters.Name}");
-                return selectedFighters;
-            }
-            else
-            {
-                Console.WriteLine("Некорректный выбор.");
-                return ChooseFighter();
-            }
+            return selectedFighters;
         }
 
         public void StartBattle()
@@ -140,13 +143,9 @@ namespace Practice
 
         public virtual void TakeDamage(int damage)
         {
-            if (damage > 0)
+            if (IsAlive)
             {
-                Health -= damage;
-                if (Health < 0)
-                {
-                    Health = 0;
-                }
+               Health -= damage;
             }
         }
     }
@@ -155,16 +154,16 @@ namespace Practice
     {
         public Arbalester(string name) : base(name)
         {
-            Health = 1000;
-            TwinShot = 148;
+            Health = 1500;
+            TwinShotDamage = 148;
         }
 
-        public int TwinShot { get; private set; }
+        public int TwinShotDamage { get; private set; }
 
         public override void Attack(Fighter enemy)
         {
             Console.WriteLine($"{Name}, выпускает двойную стрелу.");
-            enemy.TakeDamage(TwinShot);
+            enemy.TakeDamage(TwinShotDamage);
         }
     }
 
@@ -172,7 +171,7 @@ namespace Practice
     {
         public Archmage(string name) : base(name)
         {
-            Health = 900;
+            Health = 1500;
             AuraFlash = 150;
         }
 
@@ -190,15 +189,15 @@ namespace Practice
         public Knight(string name) : base(name)
         {
             Health = 2000;
-            ShieldFortress = 170;
+            ShieldFortressDamage = 170;
         }
 
-        public int ShieldFortress { get; private set; }
+        public int ShieldFortressDamage { get; private set; }
 
         public override void Attack(Fighter enemy)
         {
             Console.WriteLine($"{Name} удар.");
-            enemy.TakeDamage(ShieldFortress);
+            enemy.TakeDamage(ShieldFortressDamage);
         }
     }
 }
@@ -208,15 +207,15 @@ class Hunter : Fighter
     public Hunter(string name) : base(name)
     {
         Health = 1500;
-        HammerCrush = 160;
+        WindBladeDamage = 160;
     }
 
-    public int HammerCrush { get; private set; }
+    public int WindBladeDamage { get; private set; }
 
     public override void Attack(Fighter enemy)
     {
-        Console.WriteLine($"{Name} бьет молотом в землю.");
-        enemy.TakeDamage(HammerCrush);
+        Console.WriteLine($"{Name} атакует мечом.");
+        enemy.TakeDamage(WindBladeDamage);
     }
 }
 
@@ -224,15 +223,15 @@ class Magician : Fighter
 {
     public Magician(string name) : base(name)
     {
-        Health = 900;
-        SwordAttack = 150;
+        Health = 1500;
+        FireDamage = 150;
     }
 
-    public int SwordAttack { get; set; }
+    public int FireDamage { get; private set; }
 
     public override void Attack(Fighter enemy)
     {
-        Console.WriteLine($"{Name} Бьет мечом");
-        enemy.TakeDamage(SwordAttack);
+        Console.WriteLine($"{Name} атакует огнем.");
+        enemy.TakeDamage(FireDamage);
     }
 }
