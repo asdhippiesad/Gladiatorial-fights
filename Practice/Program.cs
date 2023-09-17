@@ -1,7 +1,6 @@
 ﻿using Practice;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Practice
 {
@@ -172,15 +171,15 @@ namespace Practice
         public Archmage(string name) : base(name)
         {
             Health = 1500;
-            AuraFlash = 150;
+            AuraFlashDamage = 150;
         }
 
-        public int AuraFlash { get; private set; }
+        public int AuraFlashDamage { get; private set; }
 
         public override void Attack(Fighter enemy)
         {
             Console.WriteLine($"{Name} использует магическое заклинание.");
-            enemy.TakeDamage(AuraFlash);
+            enemy.TakeDamage(AuraFlashDamage);
         }
     }
 
